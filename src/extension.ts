@@ -1,23 +1,18 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { OpenEdgeAblExtensionService } from './services/oeabl/OpenEdgeAblExtensionService';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log("ABL DataDigger extension active");
+	console.log("[abl-datadigger] Extension actived");
 
   	// Riverside dependency check
-  	const ablExt = vscode.extensions.getExtension(
-    	"RiversideSoftware.openedge-abl-lsp"
-  	);
-	if (!ablExt) {
-		vscode.window.showErrorMessage("OpenEdge ABL extension from Riverside Software is not installed!");
-	} else {
-		console.log("Riverside ABL LSP API:", ablExt.exports);
-	}
+	const ablExt = await OpenEdgeAblExtensionService.getInstance();
+	console.log("Als hier, dan alles goed met de Riverside Software - Openedge ABL extension.");
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
