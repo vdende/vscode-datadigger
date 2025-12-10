@@ -10,15 +10,14 @@ define variable config  as JsonObject        no-undo.
 cfgFile = session:parameter.
 parser  = new ObjectModelParser().
 config  = cast(parser:ParseFile(cfgFile), JsonObject).
+os-delete value(cfgFile).
 
-log-manager:logfile-name = config:GetCharacter("clientLog").
-log-manager:write-message(substitute("Using config file: &1", cfgFile)).
-log-manager:write-message(string(config:GetJsonText())).
+propath = substitute("&1,&2"
+                    ,config:GetCharacter("dataDiggerPath")
+                    ,propath).
 
-message num-dbs skip propath view-as alert-box.
+run DataDigger.p.
 
 finally:
-  os-delete value(cfgFile).
-  log-manager:close-log().
   quit.
 end finally.

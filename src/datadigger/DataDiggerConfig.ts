@@ -174,14 +174,10 @@ export class DataDiggerConfig {
    */
   private writeStartConfigJson(config: DataDiggerProject): string {
     const configFile = path.join(os.tmpdir(), `abldd_${Date.now()}.json`);
-    const clientLog  = path.join(os.tmpdir(), `dd_client_${config.projectName}.log`);
 
     const cfgJson = {
-      "dataDiggerPath": config.dataDiggerPath,
-      "clientLog": clientLog
+      "dataDiggerPath": config.dataDiggerPath
     };
-
-    Logger.info(`DataDigger client logfile: ${clientLog}`);
 
     fs.writeFileSync(configFile, JSON.stringify(cfgJson, null, 2), { encoding: "utf-8" });
 
