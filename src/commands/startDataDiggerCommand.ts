@@ -2,13 +2,14 @@ import * as vscode from "vscode";
 import { DataDiggerConfig } from "../datadigger/DataDiggerConfig";
 import { DataDiggerProject } from "../datadigger/DataDiggerProject";
 import { Logger } from "../util/Logger";
+import { App } from "../util/App";
 
 /**
  * Handle start of DataDigger
  *
  * @returns
  */
-export async function run(context: vscode.ExtensionContext): Promise<void> {
+export async function run(): Promise<void> {
 
   const ddConfigs  : DataDiggerConfig               = await DataDiggerConfig.getInstance();
   const ddProjects : Map<string, DataDiggerProject> = ddConfigs.getDataDiggerProjects();
@@ -26,13 +27,13 @@ export async function run(context: vscode.ExtensionContext): Promise<void> {
   // When one project, start it directly
   if (ddProjects.size === 1) {
     const [ddProjectConfig] = ddProjects.values();
-    await ddConfigs.startDataDigger(ddProjectConfig, context);
-    context.globalState.update("dd.lastProject", ddProjectConfig.projectName);
+    await ddConfigs.startDataDigger(ddProjectConfig);
+    App.ctx.globalState.update("dd.lastProject", ddProjectConfig.projectName);
     return;
   }
 
   // More projects -> show QuickPick (sort by lastUsed)
-  const lastUsedProject = context.globalState.get<string>("dd.lastProject");
+  const lastUsedProject =  App.ctx.globalState.get<string>("dd.lastProject");
   const items: vscode.QuickPickItem[] = [];
   for (const [projectName, ddProjectConfig] of ddProjects.entries()) {
     items.push({
@@ -65,7 +66,7 @@ export async function run(context: vscode.ExtensionContext): Promise<void> {
     vscode.window.showErrorMessage(`ABL DataDigger: configuration for project '${selection.label}' is not found!`);
     return;
   }
-  context.globalState.update("dd.lastProject", selection.label);
+   App.ctx.globalState.update("dd.lastProject", selection.label);
 
-  await ddConfigs.startDataDigger(chosenConfig, context);
+  await ddConfigs.startDataDigger(chosenConfig);
 }

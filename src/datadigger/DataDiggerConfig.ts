@@ -7,6 +7,7 @@ import { OpenEdgeAblExtensionService } from "../oeabl/OpenEdgeAblExtension";
 import { DataDiggerProject } from "./DataDiggerProject";
 import { Logger } from "../util/Logger";
 import { spawn } from "child_process";
+import { App } from "../util/App";
 
 export class DataDiggerConfig {
 
@@ -65,10 +66,10 @@ export class DataDiggerConfig {
         if (fs.existsSync(diggerPath)) {
           Logger.info(`DataDigger path for project '${projectName}': ${diggerPath}`);
         } else {
-          Logger.warn(`DataDigger path for project '${projectName}': ${diggerPath} --> not found!`);
+          Logger.warn(`DataDigger path for project '${projectName}': ${diggerPath} --> not found`);
         }
       } else {
-        Logger.warn(`DataDigger path for project '${projectName}': ${diggerPath} --> not found!`);
+        Logger.warn(`DataDigger path for project '${projectName}': ${diggerPath} --> not found`);
       }
 
       // datadigger path path must be set
@@ -135,7 +136,7 @@ export class DataDiggerConfig {
    *
    * @param config DataDiggerProject object
    */
-  public async startDataDigger(config: DataDiggerProject, context: vscode.ExtensionContext): Promise<void> {
+  public async startDataDigger(config: DataDiggerProject): Promise<void> {
     Logger.info(`Start DataDigger for project '${config.projectName}'`);
 
     const prowin : string = `${config.dlcHome}/bin/prowin.exe`;
@@ -143,7 +144,7 @@ export class DataDiggerConfig {
     Logger.debug(`DataDiggerPath: ${config.dataDiggerPath}`);
 
     const cfgFile = this.writeStartConfigJson(config);
-    const wrapper = context.asAbsolutePath(path.join("resources", "ddwrapper.p"));
+    const wrapper = App.ctx.asAbsolutePath(path.join("resources", "ddwrapper.p"));
 
     // add DataDigger.pf first, and all following parameters will override the previous (if exists)
     const args = [
