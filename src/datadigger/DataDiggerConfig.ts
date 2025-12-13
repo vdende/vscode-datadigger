@@ -104,11 +104,17 @@ export class DataDiggerConfig {
    * @returns DataDigger path or undefined if not set
    */
   private getDiggerPathForProject(projectUri: vscode.Uri): string | undefined {
-    // section = undefined → we gebruiken de 'root' (dus key is 'abl.datadigger.path')
-    // resource = projectUri → VS Code zoekt automatisch:
-    //   WorkspaceFolder setting -> Workspace setting -> User setting
+    // First parameter 'section': undefined --> we don't want a section, we provide full-key in the config.get
+    // Second parameter 'scope' : projectUri ==> VSCode searches automatically
+    //     ProjectFolder setting -> Workspace setting -> User setting
     const config = vscode.workspace.getConfiguration(undefined, projectUri);
-    const value = config.get<string>("abl.datadigger.path");
+    const value  = config.get<string>("abl.datadigger.path");
+
+    // only when the value is empty, we'll use the DataDigger in the box
+    if (value === "") {
+      return App.ctx.asAbsolutePath(path.join("resources", "DataDigger"));
+    }
+
     return value || undefined;
   }
 
@@ -157,11 +163,17 @@ export class DataDiggerConfig {
     ];
     Logger.debug(`Arguments: ${args}`)
 
+    const workPath: string = this.prepareUserWorkPath(config);
+    Logger.debug(`WorkPath: ${workPath}`);
+
     const child = spawn(prowin, args, {
       cwd: config.projectDir,
       detached: true,
       stdio: "ignore",
-      windowsHide: false
+      windowsHide: false,
+      env: {
+        DD_WORKDIR: workPath
+      }
     });
 
     child.unref();
@@ -183,6 +195,29 @@ export class DataDiggerConfig {
     fs.writeFileSync(configFile, JSON.stringify(cfgJson, null, 2), { encoding: "utf-8" });
 
     return configFile;
+  }
+
+  /**
+   * We need a user settings folder when the 'global' extension DataDigger path is used
+   *
+   * @param config
+   * @returns path
+   */
+  private prepareUserWorkPath(config: DataDiggerProject): string {
+    // we don't need a workdir when the user has set it to its custom DD-dir
+    if (config.dataDiggerPath !== App.ctx.asAbsolutePath(path.join("resources", "DataDigger"))) {
+      return "";
+    }
+
+    const base     = process.env.LOCALAPPDATA || path.join(os.homedir(), "AppData", "Local");
+    const workPath = path.join(base, "Code", "DataDigger", config.projectName)
+
+    if (!fs.existsSync(workPath)) {
+      Logger.debug(`Creating DataDigger work directory: ${workPath}`)
+    }
+    fs.mkdirSync(workPath, { recursive: true });
+
+    return workPath;
   }
 
   /**
