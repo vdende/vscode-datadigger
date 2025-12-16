@@ -12,4 +12,5 @@ export interface ProjectInfo {
   dlcHome: string;
   oeVersion: string;
   dbConnections: string[];
+  projectParameters: string;
 }

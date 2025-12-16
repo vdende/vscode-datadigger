@@ -25,18 +25,30 @@
         "abl.datadigger.path": {
           "type": "string",
           "default": "",
-          "description": "Path the local DataDigger instance",
-          "scope": "resource"
+          "description": "Path of the local DataDigger instance",
+          "scope": "resource",
+          "order": 1
+        },
+        "abl.datadigger.addProjectParameters": {
+          "type": "boolean",
+          "default": false,
+          "description": "Add the OpenEdge project client parameters when starting DataDigger",
+          "scope": "resource",
+          "order": 2
         },
         "abl.datadigger.extraParameters": {
           "type": "string",
           "default": "-nosplash",
-          "description": "Extra parameters when starting DataDigger"
+          "description": "Extra parameters when starting DataDigger",
+          "scope": "resource",
+          "order": 3
         },
         "abl.datadigger.debugLogging": {
           "type": "boolean",
           "default": false,
-          "description": "Enable debug logging for DataDigger extension"
+          "description": "Enable debug logging",
+          "scope": "resource",
+          "order": 4
         }
       }
     },

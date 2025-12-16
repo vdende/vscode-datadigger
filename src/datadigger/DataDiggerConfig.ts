@@ -55,12 +55,18 @@ export class DataDiggerConfig {
         oeVersion: projectInfo.oeVersion,
         dbConnections: projectInfo.dbConnections,
         dataDiggerPath: "",
+        projectParameters: "",
         extraParameters: ""
       };
 
       const projectUri         : vscode.Uri         = vscode.Uri.file(projectInfo.projectRoot);
       const relativeDiggerPath : string | undefined = this.getDiggerPathForProject(projectUri);
       const extraParameters    : string | undefined = this.getExtraParametersForProject(projectUri);
+
+      if (vscode.workspace.getConfiguration(undefined, projectUri).get<boolean>("abl.datadigger.addProjectParameters")) {
+        ddProject.projectParameters = projectInfo.projectParameters;
+      }
+
       let diggerPath;
 
       if (relativeDiggerPath) {
@@ -175,9 +181,10 @@ export class DataDiggerConfig {
       "-pf", `${config.dataDiggerPath}/DataDigger.pf`,
       ...config.dbConnections.flatMap(conn => conn.split(" ")),
       "-param", config.projectName,
-      "-p", wrapper,
       "-T", os.tmpdir(),
-      ...App.parseArgs(config.extraParameters)
+      ...App.parseArgs(config.projectParameters),
+      ...App.parseArgs(config.extraParameters),
+      "-p", wrapper
     ];
     Logger.debug(`Arguments: ${args}`)
 

@@ -85,8 +85,9 @@ export class OpenEdgeAblExtensionService {
 
         // get db connections and assign it to the project info
         const oeProjectJsonData = this.parseOpenEdgeProjectJson(folderPath);
-        info.dbConnections = this.getDbConnections(oeProjectJsonData, folder.name);
-        info.oeVersion     = oeProjectJsonData.oeversion;
+        info.dbConnections     = this.getDbConnections(oeProjectJsonData, folder.name);
+        info.oeVersion         = oeProjectJsonData.oeversion;
+        info.projectParameters = oeProjectJsonData.extraParameters || "";
 
         // only add projects which have db connections
         if (info.dbConnections.length > 0) {

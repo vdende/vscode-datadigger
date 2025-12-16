@@ -34,16 +34,22 @@ export class App {
    * @returns Array of the arguments
    */
   public static parseArgs(input: string): string[] {
-    const matches = input.match(/(?:[^\s"]+|"[^"]*")+/g);
+    const regex = /(?:[^\s"'"]+|"[^"]*"|'[^']*')+/g;
+    const matches = input.match(regex);
+
     if (!matches) {
       return [];
     }
 
-    return matches.map(arg =>
-      arg.startsWith('"') && arg.endsWith('"')
-        ? arg.slice(1, -1)
-        : arg
-    );
+    return matches.map(arg => {
+      if (
+        (arg.startsWith('"') && arg.endsWith('"')) ||
+        (arg.startsWith("'") && arg.endsWith("'"))
+      ) {
+        return arg.slice(1, -1);
+      }
+      return arg;
+    });
 }
 
 }
