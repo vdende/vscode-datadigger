@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as path from "path";
 import { DataDiggerConfig } from "../datadigger/DataDiggerConfig";
 import { DataDiggerProject } from "../datadigger/DataDiggerProject";
 import { Logger } from "../util/Logger";
@@ -36,9 +37,10 @@ export async function run(): Promise<void> {
   const lastUsedProject =  App.ctx.globalState.get<string>("dd.lastProject");
   const items: vscode.QuickPickItem[] = [];
   for (const [projectName, ddProjectConfig] of ddProjects.entries()) {
+    const desc = getQuickPickDescription(ddProjectConfig);
     items.push({
       label: projectName,
-      description: ddProjectConfig.projectDir + (projectName === lastUsedProject ? " (last used)" : "")
+      description: desc + (projectName === lastUsedProject ? " (last used)" : "")
     });
   }
 
@@ -69,4 +71,25 @@ export async function run(): Promise<void> {
    App.ctx.globalState.update("dd.lastProject", selection.label);
 
   await ddConfigs.startDataDigger(chosenConfig);
+}
+
+/**
+ * Get description for quick pick
+ *
+ * @param ddProjectConfig
+ * @returns Description
+ */
+function getQuickPickDescription(ddProjectConfig: DataDiggerProject): string {
+  const defaultDDPath = App.ctx.asAbsolutePath(path.join("resources", "DataDigger"));
+
+  if (defaultDDPath === ddProjectConfig.dataDiggerPath) {
+    return "";
+  }
+
+  // Description: only with a custom DataDigger path
+  if (ddProjectConfig.dataDiggerPath) {
+    return path.relative(ddProjectConfig.projectDir, ddProjectConfig.dataDiggerPath);
+  }
+
+  return "";
 }

@@ -60,7 +60,7 @@ export class DataDiggerConfig {
       };
 
       const projectUri         : vscode.Uri         = vscode.Uri.file(projectInfo.projectRoot);
-      const relativeDiggerPath : string             = this.getDiggerPathForProject(projectUri);
+      const relativeDiggerPath : string             = this.getDataDiggerPathForProject(projectUri);
       const extraParameters    : string | undefined = this.getExtraParametersForProject(projectUri);
 
       const diggerPath = this.validateDataDiggerPath(relativeDiggerPath, projectName);
@@ -86,7 +86,7 @@ export class DataDiggerConfig {
    * @param projectUri
    * @returns DataDigger path or undefined if not set
    */
-  private getDiggerPathForProject(projectUri: vscode.Uri): string {
+  private getDataDiggerPathForProject(projectUri: vscode.Uri): string {
     // First parameter 'section': undefined --> we don't want a section, we provide full-key in the config.get()
     // Second parameter 'scope' : projectUri ==> VSCode searches automatically:
     //     ProjectFolder setting -> Workspace setting -> User setting
@@ -155,6 +155,8 @@ export class DataDiggerConfig {
       );
       return undefined;
     }
+
+    Logger.info(`DataDigger path for project '${projectName}': ${ddPath}`);
 
     return ddPath;
   }
