@@ -41,7 +41,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const startCommand = vscode.commands.registerCommand("abl-datadigger.launch", async () => {
     await startDataDigger.run();
   });
-   App.ctx.subscriptions.push(startCommand);
+  App.ctx.subscriptions.push(startCommand);
 
   Logger.info("ABL DataDigger Launcher extension started");
 }

@@ -61,16 +61,27 @@ export class OpenEdgeAblExtensionService {
   /**
    * Load project infos for all workspace folders
    */
-  private async loadProjectInfos() {
+  private async loadProjectInfos(): Promise<void> {
     if (!this.api) return;
 
     const folders = vscode.workspace.workspaceFolders;
     if (!folders?.length) {
-      Logger.error("There are no OpenEdge projects contigured!");
-      throw new Error("There are no OpenEdge projects contigured!");
+      Logger.warn("There are no workspace folders configured!");
+      return;
     }
 
-    for (const folder of folders) {
+    const openEdgeFolders = folders.filter(folder => {
+      const projectFile = path.join(folder.uri.fsPath, "openedge-project.json");
+      return fs.existsSync(projectFile);
+    });
+
+    if (!openEdgeFolders?.length) {
+      Logger.warn("There are no OpenEdge projects configured!");
+      vscode.window.showWarningMessage("ABL DataDigger Launcher: There are no OpenEdge projects configured!");
+      return;
+    }
+
+    for (const folder of openEdgeFolders) {
       const folderString = folder.uri.toString(true);
       const folderPath   = folder.uri.fsPath;
 
@@ -102,9 +113,9 @@ export class OpenEdgeAblExtensionService {
       }
     }
 
-    // console.log("[abl-datadigger] >>>>>>>>>>>>>>>>");
+    // console.log("[abl-datadigger-launcher] >>>>>>>>>>>>>>>>");
     // for (const [key, value] of this.projectInfoMap.entries()) {
-    //  console.log(`[abl-datadigger] - ${key}: ${JSON.stringify(value)}`);
+    //  console.log(`[abl-datadigger-launcher] - ${key}: ${JSON.stringify(value)}`);
     // }
     // console.log("[abl-datadigger] <<<<<<<<<<<<<<<<");
   }
@@ -115,12 +126,12 @@ export class OpenEdgeAblExtensionService {
    * @param projectPath
    */
   private parseOpenEdgeProjectJson(projectPath: string): any {
-    // opendge-project.json should exist
     const oeProjectJsonPath : string = path.join(projectPath, "openedge-project.json");
     Logger.debug(`OpenEdge project file: ${oeProjectJsonPath}`);
+    // sanity: should not happen
     if (!fs.existsSync(oeProjectJsonPath)) {
-      Logger.error(`No 'openedge-project.json' found in project: ${oeProjectJsonPath}`);
-      throw new Error(`No 'openedge-project.json' found in project: ${oeProjectJsonPath}`);
+      Logger.error(`No 'openedge-project.json' found in project: ${projectPath}`);
+      throw new Error(`No 'openedge-project.json' found in project: ${projectPath}`);
     }
 
     // read file
