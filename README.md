@@ -7,13 +7,13 @@ A simple VS Code extension to launch DataDigger for OpenEdge ABL projects.
 - This extension depends on the [OpenEdge ABL](https://marketplace.visualstudio.com/items?itemName=RiversideSoftware.openedge-abl-lsp) extension by [Riverside Software](https://marketplace.visualstudio.com/publishers/RiversideSoftware).
 
 ## Description
-For every OpenEdge project with a configured database connection, DataDigger can be launched directly from the VS Code command palette.
+For every OpenEdge project with a configured database connection, DataDigger can be launched directly from the VS Code Command Palette.
 
 You can either use a custom-installed and configured DataDigger instance, or use the bundled DataDigger out of the box.
 
 ## Usage
 At startup, the extension detects the available OpenEdge projects.
-Via the command palette (`Ctrl+Shift+P`), DataDigger can be launched using the command:
+Via the Command Palette (`Ctrl+Shift+P`), DataDigger can be launched using the command:
 
 `ABL DataDigger: Launch`
 
