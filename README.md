@@ -1,73 +1,52 @@
-# DataDigger for Visual Studio Code
+# ABL DataDigger Launcher for VS Code
 
-Visual Studio Code extension to spawn DataDigger
+A simple VS Code extension to launch DataDigger for OpenEdge ABL projects.
 
-This is the README for your extension "abl-datadigger". After writing up a brief description, we recommend including the following sections.
+## Related Software
+- [DataDigger](https://datadigger.wordpress.com/) is an OpenEdge ABL application for querying Progress databases, written by [Patrick Tingen](https://github.com/patrickTingen). A DataDigger instance is bundled with this extension, but it can also be installed [manually](https://github.com/patrickTingen/DataDigger).
+- This extension depends on the [OpenEdge ABL](https://marketplace.visualstudio.com/items?itemName=RiversideSoftware.openedge-abl-lsp) extension by [Riverside Software](https://marketplace.visualstudio.com/publishers/RiversideSoftware).
 
-## Features
+## Description
+For every OpenEdge project with a configured database connection, DataDigger can be launched directly from the VS Code command palette.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+You can either use a custom-installed and configured DataDigger instance, or use the bundled DataDigger out of the box.
 
-For example if there is an image subfolder under your extension project workspace:
+## Usage
+At startup, the extension detects the available OpenEdge projects.
+Via the command palette (`Ctrl+Shift+P`), DataDigger can be launched using the command:
 
-\!\[feature X\]\(images/feature-x.png\)
+`ABL DataDigger: Launch`
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+If multiple OpenEdge projects are detected, you will be prompted to select the project to use.
 
-## Requirements
+![Launch DataDigger](resources/images/launch.png)
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## Settings
 
-## Extension Settings
+### User / Workspace / Folder
+- **DataDigger path**  
+  Path to a custom DataDigger installation. When empty, the bundled DataDigger will be used.
+- **Add project client parameters**  
+  When enabled, the OpenEdge project client parameters are added when starting DataDigger.
+  **Note:** Changing this setting and/or modifying the OpenEdge client parameters in `openedge-project.json` requires a restart of VS Code before the changes take effect.
+  Defaults to `false`.
+- **Extra parameters**  
+  Additional command-line parameters passed to DataDigger on startup.
+  Defaults to `-nosplash`.
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+### User only
+- **Enable debug logging**
+  Enables debug-level logging for this extension.
+  Defaults to `false`.
 
-For example:
+## Related Extensions
+You may also be interested in the database query extension by [Baltic Amadeus](https://marketplace.visualstudio.com/publishers/BalticAmadeus), named [ProBro](https://marketplace.visualstudio.com/items?itemName=BalticAmadeus.pro-bro).
 
-This extension contributes the following settings:
+## Support
+Please report issues and feature requests via the GitHub repository.
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+## Licensing and Legal Notices
+- This extension is licensed under the [MIT License](LICENSE).
+- This extension bundles source code from **DataDigger** (© 2021 Patrick Tingen), licensed under the MIT License.
+  See [THIRD-PARTY-NOTICES](THIRD-PARTY-NOTICES.md) for details.
+- OpenEdge and ABL are registered trademarks of Progress Software Corporation.

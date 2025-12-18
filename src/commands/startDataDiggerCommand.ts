@@ -54,7 +54,7 @@ export async function run(): Promise<void> {
   }
 
   const selection = await vscode.window.showQuickPick(items, {
-    placeHolder: "Pick the OpenEdge project for ABL DataDigger Launcher"
+    placeHolder: "Pick the OpenEdge ABL project for ABL DataDigger Launcher"
   });
 
   if (!selection) {
