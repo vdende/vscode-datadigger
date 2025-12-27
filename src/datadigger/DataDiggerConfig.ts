@@ -204,14 +204,17 @@ export class DataDiggerConfig {
   public async startDataDigger(config: DataDiggerProject): Promise<void> {
     Logger.info(`Start DataDigger for project '${config.projectName}'`);
 
-    const prowin : string = `${config.dlcHome}/bin/prowin.exe`;
+    let prowin : string = `${config.dlcHome}/bin/prowin.exe`;
+    if (!fs.existsSync(`${prowin}`)) {
+      prowin = `${config.dlcHome}/bin/prowin32.exe`;
+    }
     Logger.debug(`prowin: ${prowin}`);
-    Logger.debug(`DataDiggerPath: ${config.dataDiggerPath}`);
     if (!fs.existsSync(prowin)) {
       vscode.window.showErrorMessage(`Executable not found: ${prowin}`);
-      Logger.error(`Progress executable '${prowin}' does not exist!`);
+      Logger.error(`Executable '${prowin}' does not exist!`);
       return;
     }
+    Logger.debug(`DataDiggerPath: ${config.dataDiggerPath}`);
 
     const wrapper = App.ctx.asAbsolutePath(path.join("resources", "ddwrapper.p"));
 
@@ -260,7 +263,7 @@ export class DataDiggerConfig {
     });
 
     child.on("spawn", () => {
-      Logger.info(`Started prowin.exe (pid=${child.pid}) detached`);
+      Logger.debug(`Started ${path.basename(prowin)} (pid=${child.pid}) detached`);
     });
 
     child.on("error", err => {
