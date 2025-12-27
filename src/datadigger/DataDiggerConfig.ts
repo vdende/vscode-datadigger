@@ -207,6 +207,11 @@ export class DataDiggerConfig {
     const prowin : string = `${config.dlcHome}/bin/prowin.exe`;
     Logger.debug(`prowin: ${prowin}`);
     Logger.debug(`DataDiggerPath: ${config.dataDiggerPath}`);
+    if (!fs.existsSync(prowin)) {
+      vscode.window.showErrorMessage(`Executable not found: ${prowin}`);
+      Logger.error(`Progress executable '${prowin}' does not exist!`);
+      return;
+    }
 
     const wrapper = App.ctx.asAbsolutePath(path.join("resources", "ddwrapper.p"));
 
@@ -225,14 +230,57 @@ export class DataDiggerConfig {
     const workPath: string = this.prepareUserWorkPath(config);
     Logger.debug(`WorkPath: ${workPath}`);
 
+    if (!fs.existsSync(workPath)) {
+      vscode.window.showErrorMessage(`WorkPath not found: ${workPath}`);
+      Logger.error(`WorkPath '${workPath}' does not exist!`);
+      return;
+    }
+
     const child = spawn(prowin, args, {
       cwd: config.projectDir,
       detached: true,
-      stdio: "ignore",
+      stdio: [ "ignore", "pipe", "pipe" ],
       windowsHide: false,
       env: {
+        ...process.env,
         DD_PATH: config.dataDiggerPath,
         DD_WORKDIR: workPath
+      }
+    });
+
+    let stdoutBuf = "";
+    let stderrBuf = "";
+
+    child.stdout?.on("data", data => {
+      stdoutBuf += data.toString();
+    });
+
+    child.stderr?.on("data", data => {
+      stderrBuf += data.toString();
+    });
+
+    child.on("spawn", () => {
+      Logger.info(`Started prowin.exe (pid=${child.pid}) detached`);
+    });
+
+    child.on("error", err => {
+      vscode.window.showErrorMessage("Failed to start DataDigger (see Output)");
+      Logger.error(`Failed to start DataDigger: ${err}`);
+    });
+
+    child.on("close", (code, signal) => {
+      if (stderrBuf.trim()) {
+        Logger.error(`stderr: ${stderrBuf.trim()}`);
+      }
+      if (stdoutBuf.trim()) {
+        Logger.warn(`stdout: ${stdoutBuf.trim()}`);
+      }
+
+      if (code !== 0 || stderrBuf.length > 0) {
+        Logger.error(`prowin exited, code=${code}, signal=${signal ?? "none"}`);
+        vscode.window.showErrorMessage("Failed to start DataDigger (see Output)");
+      } else {
+        Logger.debug(`prowin exited, code=${code}, signal=${signal ?? "none"}`);
       }
     });
 
