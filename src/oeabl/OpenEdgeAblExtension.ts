@@ -86,15 +86,23 @@ export class OpenEdgeAblExtensionService {
       const folderString = folder.uri.toString(true);
       const folderPath   = folder.uri.fsPath;
 
+      let info : ProjectInfo;
+
       try {
         // get project info from ABL extension API
-        const info = (await this.api.getProjectInfo(folderString)) as ProjectInfo;
+        info = (await this.api.getProjectInfo(folderString)) as ProjectInfo;
+      } catch (err) {
+        Logger.error("Error while executing getProjectInfo: " + err);
+        console.error("[abl-datadigger] Error while executing getProjectInfo:", err);
+        continue;
+      }
 
-        // get DLC home and assign it to the project info
-        info.dlcHome = (await vscode.commands.executeCommand("abl.getDlcDirectory", folderPath)) as string;
+      // get DLC home and assign it to the project info
+      info.dlcHome = (await vscode.commands.executeCommand("abl.getDlcDirectory", folderPath)) as string;
 
-        Logger.info(`ABL project info loaded for: ${folder.name}`);
+      Logger.info(`ABL project info loaded for: ${folder.name}`);
 
+      try {
         // get db connections and assign it to the project info
         const oeProjectJsonData = this.parseOpenEdgeProjectJson(folderPath);
         info.dbConnections     = this.getDbConnections(oeProjectJsonData, folder.name);
@@ -109,10 +117,11 @@ export class OpenEdgeAblExtensionService {
           Logger.warn(`No DB connections found for project '${folder.name}'`);
         }
       } catch (err) {
-        Logger.error("Error while executing getProjectInfo: " + err);
-        console.error("[abl-datadigger] Error while executing getProjectInfo:", err);
+        Logger.error("Error while parsing openedge-properties.json: " + err);
+        console.error("[abl-datadigger] Error while openedge-properties.json:", err);
+        continue;
       }
-    }
+    } // for
 
     // console.log("[abl-datadigger-launcher] >>>>>>>>>>>>>>>>");
     // for (const [key, value] of this.projectInfoMap.entries()) {
