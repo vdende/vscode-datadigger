@@ -11,3 +11,4 @@ vsc-extension-quickstart.md
 vscode-datadigger.code-workspace
 node_modules/
 *.vsix
+esbuild.js

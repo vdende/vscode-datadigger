@@ -90,15 +90,15 @@
     "4gl"
   ],
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src"
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "vscode:prepublish": "npm run typecheck && npm run build"
   },
   "devDependencies": {
     "@types/node": "22.x",
     "@types/vscode": "1.90.0",
+    "esbuild": "^0.27.2",
     "eslint": "^9.39.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.3"
