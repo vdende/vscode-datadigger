@@ -24,23 +24,24 @@ If multiple OpenEdge projects are detected, you will be prompted to select the p
 ## Settings
 
 ### User / Workspace / Folder
-- **DataDigger path**  
+- **DataDigger path** 
   Path to a custom DataDigger installation. When empty, the bundled DataDigger will be used.
-- **Add project client parameters**  
+- **Add project client parameters** 
   When enabled, the OpenEdge project client parameters are added when starting DataDigger.
   **Note:** Changing this setting and/or modifying the OpenEdge client parameters in `openedge-project.json` requires a restart of VS Code before the changes take effect.
   Defaults to `false`.
-- **Extra parameters**  
+- **Extra parameters** 
   Additional command-line parameters passed to DataDigger on startup.
   Defaults to `-nosplash`.
 
 ### User only
-- **Enable debug logging**
+- **Enable debug logging** 
   Enables debug-level logging for this extension.
   Defaults to `false`.
 
 ## Related Extensions
-You may also be interested in the database query extension by [Baltic Amadeus](https://marketplace.visualstudio.com/publishers/BalticAmadeus), named [ProBro](https://marketplace.visualstudio.com/items?itemName=BalticAmadeus.pro-bro).
+- You may also be interested in the database query extension by [Baltic Amadeus](https://marketplace.visualstudio.com/publishers/BalticAmadeus), named [ProBro](https://marketplace.visualstudio.com/items?itemName=BalticAmadeus.pro-bro).
+- See also my other extension: [ABL Scratch Playground](https://marketplace.visualstudio.com/items?itemName=vdende.vscode-scratch-playground)
 
 ## Support
 Please report issues and feature requests via the GitHub repository.
