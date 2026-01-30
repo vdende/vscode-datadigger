@@ -108,6 +108,7 @@ export class OpenEdgeAblExtensionService {
         info.dbConnections     = this.getDbConnections(oeProjectJsonData, folder.name);
         info.oeVersion         = oeProjectJsonData.oeversion;
         info.projectParameters = oeProjectJsonData.extraParameters || "";
+        info.projectName       = oeProjectJsonData.name || folder.name;
 
         // only add projects which have db connections
         if (info.dbConnections.length > 0) {
@@ -168,16 +169,6 @@ export class OpenEdgeAblExtensionService {
     Logger.debug(`DB connections for project '${folderName}': ${connectArray.join(",")}`);
 
     return connectArray;
-  }
-
-  /**
-   * Gets the project info for the given project URI
-   *
-   * @param projectUri
-   * @returns ProjectInfo
-   */
-  public async getProjectInfo(projectUri: string): Promise<any> {
-    return this.api?.getProjectInfo(projectUri);
   }
 
   /**

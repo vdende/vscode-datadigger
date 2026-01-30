@@ -29,26 +29,27 @@ export async function run(): Promise<void> {
   if (ddProjects.size === 1) {
     const [ddProjectConfig] = ddProjects.values();
     await ddConfigs.startDataDigger(ddProjectConfig);
-    App.ctx.globalState.update("dd.lastProject", ddProjectConfig.projectName);
+    App.ctx.globalState.update("dd.lastProject", ddProjectConfig.projectKey);
     return;
   }
 
   // More projects -> show QuickPick (sort by lastUsed)
-  const lastUsedProject =  App.ctx.globalState.get<string>("dd.lastProject");
-  const items: vscode.QuickPickItem[] = [];
-  for (const [projectName, ddProjectConfig] of ddProjects.entries()) {
+  const lastUsedProject = App.ctx.globalState.get<string>("dd.lastProject");
+  const items: Array<vscode.QuickPickItem & { projectKey: string }> = [];
+  for (const [projectKey, ddProjectConfig] of ddProjects.entries()) {
     const desc = getQuickPickDescription(ddProjectConfig);
     items.push({
-      label: projectName,
-      description: desc + (projectName === lastUsedProject ? " (last used)" : "")
+      label: ddProjectConfig.projectName,
+      description: desc + (projectKey === lastUsedProject ? " (last used)" : ""),
+      projectKey: projectKey
     });
   }
 
   // Sort: last used project first
   if (lastUsedProject) {
     items.sort((a, b) => {
-        if (a.label === lastUsedProject) return -1;
-        if (b.label === lastUsedProject) return 1;
+        if (a.projectKey === lastUsedProject) { return -1; }
+        if (b.projectKey === lastUsedProject) { return 1; }
         return a.label.localeCompare(b.label); // alphabetic for the rest
     });
   }
@@ -62,13 +63,13 @@ export async function run(): Promise<void> {
     return;
   }
 
-  const chosenConfig = ddProjects.get(selection.label);
+  const chosenConfig = ddProjects.get(selection.projectKey);
   if (!chosenConfig) {
     Logger.error(`ABL DataDigger Launcher: configuration for project '${selection.label}' is not found!`);
     vscode.window.showErrorMessage(`ABL DataDigger Launcher: configuration for project '${selection.label}' is not found!`);
     return;
   }
-   App.ctx.globalState.update("dd.lastProject", selection.label);
+   App.ctx.globalState.update("dd.lastProject", selection.projectKey);
 
   await ddConfigs.startDataDigger(chosenConfig);
 }

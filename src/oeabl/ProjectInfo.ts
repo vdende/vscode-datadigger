@@ -13,4 +13,5 @@ export interface ProjectInfo {
   oeVersion: string;
   dbConnections: string[];
   projectParameters: string;
+  projectName: string;
 }

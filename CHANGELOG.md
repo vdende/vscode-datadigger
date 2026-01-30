@@ -1,4 +1,5 @@
 ## Version 1.1.0 - tbd
+- Show OpenEdge project name instead of folder name
 - Small improvements
 
 ## Version 1.0.5 - 2026-01-30

@@ -27,7 +27,7 @@ export class DataDiggerConfig {
    * Singleton instance accessor
    * @returns DataDiggerConfig object
    */
-  static async getInstance(): Promise<DataDiggerConfig> {
+  public static async getInstance(): Promise<DataDiggerConfig> {
     if (!DataDiggerConfig.instance) {
       DataDiggerConfig.instance = new DataDiggerConfig();
       await DataDiggerConfig.instance.waitUntilReady();
@@ -47,10 +47,11 @@ export class DataDiggerConfig {
     const oeProjects : Map<string, ProjectInfo>    = await ablExt.getProjectInfos();
 
     // start filling the ddProjectConfigMap from the given oeProjects
-    for (const [projectName, projectInfo] of oeProjects) {
+    for (const [projectKey, projectInfo] of oeProjects) {
       const ddProject: DataDiggerProject = {
-        projectName: projectName,
+        projectKey: projectKey,
         projectDir: projectInfo.projectRoot,
+        projectName: projectInfo.projectName,
         dlcHome: projectInfo.dlcHome,
         oeVersion: projectInfo.oeVersion,
         dbConnections: projectInfo.dbConnections,
@@ -63,7 +64,7 @@ export class DataDiggerConfig {
       const relativeDiggerPath : string             = this.getDataDiggerPathForProject(projectUri);
       const extraParameters    : string | undefined = this.getExtraParametersForProject(projectUri);
 
-      const diggerPath = this.validateDataDiggerPath(relativeDiggerPath, projectName);
+      const diggerPath = this.validateDataDiggerPath(relativeDiggerPath, projectKey);
       if (diggerPath === undefined) {
         continue;
       }
@@ -74,7 +75,7 @@ export class DataDiggerConfig {
 
       ddProject.dataDiggerPath  = diggerPath;
       ddProject.extraParameters = extraParameters || "";
-      this.ddProjectConfigMap.set(projectName, ddProject);
+      this.ddProjectConfigMap.set(projectKey, ddProject);
     } // for loop
 
     this.initialized = true;
@@ -202,7 +203,7 @@ export class DataDiggerConfig {
    * @param config DataDiggerProject object
    */
   public async startDataDigger(config: DataDiggerProject): Promise<void> {
-    Logger.info(`Start DataDigger for project '${config.projectName}'`);
+    Logger.info(`Start DataDigger for project '${config.projectKey}'`);
 
     let prowin : string = `${config.dlcHome}/bin/prowin.exe`;
     if (!fs.existsSync(`${prowin}`)) {
@@ -303,10 +304,10 @@ export class DataDiggerConfig {
     }
 
     const base     = process.env.LOCALAPPDATA || path.join(os.homedir(), "AppData", "Local");
-    const workPath = path.join(base, "Code", "DataDigger", config.projectName)
+    const workPath = path.join(base, "Code", "DataDigger", config.projectKey);
 
     if (!fs.existsSync(workPath)) {
-      Logger.debug(`Creating DataDigger work directory: ${workPath}`)
+      Logger.debug(`Creating DataDigger work directory: ${workPath}`);
     }
     fs.mkdirSync(workPath, { recursive: true });
 

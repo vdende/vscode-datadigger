@@ -1,6 +1,7 @@
 export interface DataDiggerProject {
-  projectName: string;
+  projectKey: string;
   projectDir: string;
+  projectName: string;
   dlcHome: string;
   oeVersion: string;
   dbConnections: string[];
