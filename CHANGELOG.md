@@ -1,3 +1,6 @@
+## Version 1.0.5 - 2026-01-30
+- Check on Windows-only
+
 ## Version 1.0.4 - 2026-01-02
 - No check on `workPath` for custom DataDigger location
 - Ignore comments in `openedge-project.json`
