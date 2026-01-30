@@ -68,7 +68,7 @@
       "commandPalette": [
         {
           "command": "abl-datadigger.launch",
-          "when": "true"
+          "when": "datadiggerReady"
         }
       ]
     }

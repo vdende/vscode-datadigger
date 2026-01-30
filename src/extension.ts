@@ -10,6 +10,15 @@ import { App } from "./util/App";
  * @param context
  */
 export async function activate(context: vscode.ExtensionContext) {
+
+  await vscode.commands.executeCommand("setContext", "datadiggerReady", false);
+
+  // Check platform
+  if (process.platform !== "win32") {
+    void vscode.window.showErrorMessage(`ABL DataDigger Launcher is Windows-only and cannot run on '${process.platform}'. Please uninstall this extension`);
+    return;
+  }
+
   // first set the context to use globally
   App.init(context);
 
@@ -42,6 +51,8 @@ export async function activate(context: vscode.ExtensionContext) {
     await startDataDigger.run();
   });
   App.ctx.subscriptions.push(startCommand);
+
+  await vscode.commands.executeCommand("setContext", "datadiggerReady", true);
 
   Logger.info("ABL DataDigger Launcher extension started");
 }
