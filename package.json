@@ -76,7 +76,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vdende/vscode-datadigger"
+    "url": "https://github.com/vdende/vscode-datadigger-launcher"
   },
   "bugs": {
     "url": "https://github.com/vdende/vscode-datadigger/issues"
